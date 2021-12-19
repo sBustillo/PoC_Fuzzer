@@ -1,38 +1,123 @@
 #include <iostream>
+#include <string>
+#include <fstream>
+#include <random>
 
 
+#include <windows.h>
 
 using namespace std;
 
-
+int getRandomNumber(int);
 
 int main(){
 	
-	#preguntamos por num de archivos N a generar
+	int nArchivos, nBytes;
+	char * memblock;
+	
+	bool dbg = true;
+	int randpost;
+	std::string outname = "badfile.pdf";
+	std::string outnameConcat;
+	std::string randstr;
+	streampos size;
+	
+	ofstream copyFile;
+			
+	
+	cout << "\n\n Introduce el numero de archivos a generar: ";
+	cin >> nArchivos;
+	//check for int only
+	cout << "\n\n Introduce el numero de bytes a introducir";
+	cin >> nBytes; // -> pòr el momento es inutil
+	//check for int only
+	
+	ifstream originalFile("bueno.pdf");
+	//check if its open
+	if (!originalFile){
+		cout << "archivo original no encontrado";
+		return -1;
+	}
+	
+	//obtememos tamaño del archivo
+	originalFile.seekg(0,ios::end);
+	size = originalFile.tellg();
+	originalFile.seekg (0, ios::beg);
 	
 	
+	memblock = new char [size];
+    originalFile.read (memblock, size);
+    
+    
+    if (debug){
+	    //- - - - debug - - - -//
+	    cout << "size is: ";
+		cout << size;
+		cout <<"\n\n";
+		//- - - - ---- - - - -//
+	}
+    
 	
-	#preguntamos por la longitud L de las strings a insertar
-	
-	
-	#preguntamos por el archivo para mutar
-	
-	
-	
-	#abrimos el archivo y hacemos copia del mismo en memoria
-	
-	
-	#FUNCION: 		
-	
-		#puntero random al archivo copia en memoria		
+	while(nArchivos > 0){
+		//generamos el nuevo nombre;
+	 	outnameConcat = std::to_string(nArchivos) + "-" + outname;
+	 	
+	 	//Abrimos el archivo nuevo
+		copyFile.open(outnameConcat);
 		
-		#generamos string de bytes de longitud L y lo escribimos en la direccion que nos devolvio el puntero en la instruccion anterior 
+		originalFile.read (memblock, size);
 		
-		#guardamos los cambios en un fichero en el sistema
+		randpost = getRandomNumber(size);
+		if (debug){
+			//- - - - debug - - - -//
+			cout << "rand number is: ";
+			cout << randpost;
+			cout <<"\n\n";
+			//- - - - ---- - - - -//
+		}
 		
-		#BORRAMOS el archivo copia de memoria (el archivo y el puntero y to')
+		//Generamos una string random para insertar en una posicion aleatoria.
+		randstr = std::to_string(randpost) + "_";
 		
-		#si no hemos llegado a N iter vuelve a llamarse a si misma
-
+		if (debug){
+			//- - - - debug - - - -//
+			cout << "pos in memblock is :";
+			cout << &memblock[randpost];
+			cout <<"\n\n";
+			cout << "size of the chunk is:";
+			cout << sizeof(memblock[randpost]);
+			cout <<"\n\n";
+			cout << "str content: ";
+			cout << randstr;
+			cout << "\n";
+			cout << randstr[0];
+			cout << "\n";
+			//- - - - ---- - - - -//
+		}
+		
+		//to do: insertar cadenas de bytes de longitud que nos de la gana
+		memblock[randpost] = randstr[0];
+		
+		
+		if (debug){
+			cout << "memblock mod -> ";
+			cout << memblock[randpost];
+			cout << "\n";
+		}
+		
+		copyFile.write (memblock,size);
+		
+		nArchivos--;
+		copyFile.close();
+		if (debug){
+			system("pause");
+		}
+	}
+	originalFile.close();
 	return 0;	
+}
+
+
+int getRandomNumber(int maxRange){
+	return rand() % maxRange + 1;
 }
