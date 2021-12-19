@@ -3,7 +3,7 @@
 #include <fstream>
 #include <random>
 
-
+//tmp only for sys.pause
 #include <windows.h>
 
 using namespace std;
@@ -15,7 +15,7 @@ int main(){
 	int nArchivos, nBytes;
 	char * memblock;
 	
-	bool dbg = true;
+	bool debug = true;
 	int randpost;
 	std::string outname = "badfile.pdf";
 	std::string outnameConcat;
